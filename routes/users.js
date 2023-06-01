@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { celebrate, Joi, errors } = require('celebrate');
+
 const {
   createUser,
   updateUser,
@@ -12,10 +12,6 @@ router.post('/', createUser);
 router.patch('/me', updateUser);
 router.get('/', getUsers);
 router.patch('/me/avatar', uploadAvatar);
-router.get('/:userId', celebrate({
-  params: Joi.object().keys({
-    userId: Joi.string().required().hex().length(24),
-  })
-}), findUserById);
+router.get('/:userId', findUserById);
 
 module.exports = router;

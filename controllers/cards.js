@@ -58,6 +58,13 @@ const putLike = (req, res) => {
           stack: err.stack,
         })
       }
+      if (err.name === 'Error') {
+        return res.status(NOT_FOUND).send({
+          message: 'Карточка с указанным id не найдена',
+          error: err.message,
+          stack: err.stack,
+        })
+      }
       res.status(SERVER_ERROR).send({
         message: 'Internal Server Error',
         err: err.name,
@@ -92,6 +99,13 @@ const deleteLike = (req, res) => {
           stack: err.stack,
         })
       }
+      if (err.name === 'Error') {
+        return res.status(NOT_FOUND).send({
+          message: 'Карточка с указанным id не найдена',
+          error: err.message,
+          stack: err.stack,
+        })
+      }
       res.status(SERVER_ERROR).send({
         message: 'Internal Server Error',
         err: err.name,
@@ -112,6 +126,13 @@ const deleteCard = (req, res) => {
         res.status(NOT_FOUND).send({
           message: 'Карточка с указанным id не найдена',
           err: err.message,
+          stack: err.stack,
+        })
+      }
+      if (err.name === 'Error') {
+        return res.status(NOT_FOUND).send({
+          message: 'Карточка с указанным id не найдена',
+          error: err.message,
           stack: err.stack,
         })
       }
