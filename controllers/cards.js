@@ -119,11 +119,11 @@ const deleteCard = (req, res) => {
     .findByIdAndDelete(req.params.cardId)
     .orFail(new Error('Карточка с указанным id не найдена'))
     .then((res) => {
-      res.send(card)
+      res.status(OK).send(card)
     })
     .catch((err) => {
       if (err.name === 'NotValidId') {
-        res.status(OK).send({
+        res.status(BAD_REQUEST).send({
           message: 'Карточка удалена',
         })
       }
