@@ -69,10 +69,17 @@ const findUserById = (req, res) => {
       res.status(OK).send(user);
     })
     .catch((err) => {
-      if (err.name === 'NotValidId') {
-        return res.status(NOT_FOUND).send({
+      if (err.name === 'ValidationError') {
+        return res.status(BAD_REQUEST).send({
           message: 'Пользователь с указанным id не найден',
           error: err.message,
+          stack: err.stack,
+        })
+      }
+      if (err.name === 'NotValidId') {
+        res.status(NOT_FOUND).send({
+          message: 'Пользователь с указанным id не найден',
+          err: err.message,
           stack: err.stack,
         })
       }
