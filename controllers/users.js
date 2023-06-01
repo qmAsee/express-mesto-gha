@@ -66,7 +66,9 @@ const findUserById = (req, res) => {
   userModel.findById(req.params.userId)
     .orFail(new Error('Введён некорректный id'))
     .then((user) => {
-      res.status(OK).send(user);
+      req.params.userId.length === 24
+        ? res.status(OK).send(user)
+        : res.status(BAD_REQUEST).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
