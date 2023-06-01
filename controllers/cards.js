@@ -51,7 +51,7 @@ const putLike = (req, res) => {
           stack: err.stack
         })
       }
-      if (err.name === 'NotValidId') {
+      if (err.message === 'NotValidId') {
         res.status(BAD_REQUEST).send({
           message: 'Карточка с указанным id не найден',
           err: err.message,
@@ -92,7 +92,7 @@ const deleteLike = (req, res) => {
           stack: err.stack
         })
       }
-      if (err.name === 'NotValidId') {
+      if (err.message === 'NotValidId') {
         res.status(BAD_REQUEST).send({
           message: 'Карточка с указанным id не найден',
           err: err.message,
