@@ -7,19 +7,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: 2,
     maxlength: 30,
-    default: 'Жак-Ив Кусто',
   },
   about: {
     required: true,
     type:  String,
     minlength: 2,
     maxlength: 30,
-    default: 'Исследователь',
   },
   avatar: {
     required: true,
     type: String,
-    default: 'https://avatarko.ru/img/kartinka/1/Crazy_Frog.jpg'
   },
 })
 

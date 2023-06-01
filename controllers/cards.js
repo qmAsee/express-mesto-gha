@@ -102,7 +102,7 @@ const deleteCard = (req, res) => {
   cardSchema
     .findByIdAndDelete(req.params.cardId)
     .then((res) => {
-      res.status(200).send(card)
+      res.status(204).send(card)
     })
     .catch((err) => {
       if (err.name === 'NotValidId') {
