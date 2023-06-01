@@ -64,6 +64,7 @@ const updateUser = (req, res) => {
 
 const findUserById = (req, res) => {
   userModel.findById(req.params.userId)
+    .orFail(new Error('Введён некорректный id'))
     .then((user) => {
       res.status(OK).send(user);
     })
