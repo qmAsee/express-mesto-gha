@@ -118,8 +118,8 @@ const deleteCard = (req, res) => {
   cardSchema
     .findByIdAndDelete(req.params.cardId)
     .orFail(new Error('Карточка с указанным id не найдена'))
-    .then((res) => {
-      res.send(card)
+    .then((card) => {
+      res.status(OK).send(card)
     })
     .catch((err) => {
       if (err.name === 'NotValidId') {
