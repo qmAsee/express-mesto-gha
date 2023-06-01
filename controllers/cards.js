@@ -1,4 +1,11 @@
 const cardSchema = require('../models/card');
+const
+{ BAD_REQUEST,
+  NOT_FOUND,
+  SERVER_ERROR,
+  OK,
+  CREATED
+} = require('../utils/responses')
 
 const createCard = (req, res) => {
   cardSchema
@@ -10,6 +17,13 @@ const createCard = (req, res) => {
       res.status(201).send(card)
     })
     .catch ((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(BAD_REQUEST).send({
+          message: 'Введенные данные некорректны',
+          err: err.message,
+          stack: err.stack
+        })
+      }
       res.status(500).send({
         message: 'Internal Server Error',
         err: err.name,
@@ -18,7 +32,7 @@ const createCard = (req, res) => {
     })
 }
 
-const likeCard = (req, res) => {
+const putLike = (req, res) => {
   cardSchema
     .findByIdAndUpdate(
       req.params.cardId,
@@ -29,6 +43,20 @@ const likeCard = (req, res) => {
       res.status(201).send(card)
     })
     .catch ((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(BAD_REQUEST).send({
+          message: 'Введенные данные некорректны',
+          err: err.message,
+          stack: err.stack
+        })
+      }
+      if (err.name === 'NotValidId') {
+        res.status(NOT_FOUND).send({
+          message: 'Карточка с указанным id не найден',
+          err: err.message,
+          stack: err.stack,
+        })
+      }
       res.status(500).send({
         message: 'Internal Server Error',
         err: err.name,
@@ -48,6 +76,20 @@ const deleteLike = (req, res) => {
       res.status(201).send(card)
     })
     .catch ((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(BAD_REQUEST).send({
+          message: 'Введенные данные некорректны',
+          err: err.message,
+          stack: err.stack
+        })
+      }
+      if (err.name === 'NotValidId') {
+        res.status(NOT_FOUND).send({
+          message: 'Карточка с указанным id не найден',
+          err: err.message,
+          stack: err.stack,
+        })
+      }
       res.status(500).send({
         message: 'Internal Server Error',
         err: err.name,
@@ -59,13 +101,17 @@ const deleteLike = (req, res) => {
 const deleteCard = (req, res) => {
   cardSchema
     .findByIdAndDelete(req.params.cardId)
-    .orFail(() => {
-      throw new Error('CardNotFound')
-    })
     .then((res) => {
       res.status(200).send(card)
     })
     .catch((err) => {
+      if (err.name === 'NotValidId') {
+        res.status(NOT_FOUND).send({
+          message: 'Карточка с указанным id не найден',
+          err: err.message,
+          stack: err.stack,
+        })
+      }
       res.status(500).send({
         message: 'Internal Server Error',
         err: err.name,
@@ -80,6 +126,13 @@ const getCards = (req, res) =>  {
       res.send(cards);
     })
     .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(BAD_REQUEST).send({
+          message: 'Введенные данные некорректны',
+          err: err.message,
+          stack: err.stack
+        })
+      }
       res.status(500).send({
         message: 'Internal Server Error',
         err: err.message,
@@ -92,6 +145,6 @@ module.exports = {
   getCards,
   createCard,
   deleteCard,
-  likeCard,
+  putLike,
   deleteLike,
 }
