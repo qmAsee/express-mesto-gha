@@ -44,14 +44,14 @@ const putLike = (req, res) => {
       res.status(OK).send(card)
     })
     .catch ((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({
           message: 'Введенные данные некорректны',
           err: err.message,
           stack: err.stack
         })
       }
-      if (err.message === 'NotValidId') {
+      if (err.name === 'NotValidId') {
         res.status(BAD_REQUEST).send({
           message: 'Карточка с указанным id не найден',
           err: err.message,
@@ -85,14 +85,14 @@ const deleteLike = (req, res) => {
       res.status(OK).send(card)
     })
     .catch ((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({
           message: 'Введенные данные некорректны',
           err: err.message,
           stack: err.stack
         })
       }
-      if (err.message === 'NotValidId') {
+      if (err.name === 'NotValidId') {
         res.status(BAD_REQUEST).send({
           message: 'Карточка с указанным id не найден',
           err: err.message,
@@ -134,7 +134,7 @@ const deleteCard = (req, res) => {
           stack: err.stack,
         })
       }
-      if (err.name === 'NotValidId') {
+      if (err.name === 'CastError') {
         res.status(BAD_REQUEST).send({
           message: 'Карточка с указанным id не найден',
           err: err.message,
