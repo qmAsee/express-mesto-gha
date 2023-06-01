@@ -14,7 +14,7 @@ const createCard = (req, res) => {
       owner: req.user._id
     })
     .then((card) => {
-      res.status(201).send(card)
+      res.status(CREATED).send(card)
     })
     .catch ((err) => {
       if (err.name === 'ValidationError') {
@@ -24,7 +24,7 @@ const createCard = (req, res) => {
           stack: err.stack
         })
       }
-      res.status(500).send({
+      res.status(SERVER_ERROR).send({
         message: 'Internal Server Error',
         err: err.name,
         stack: err.stack,
@@ -40,7 +40,7 @@ const putLike = (req, res) => {
       { new: true }
     )
     .then((card) => {
-      res.status(201).send(card)
+      res.status(OK).send(card)
     })
     .catch ((err) => {
       if (err.name === 'ValidationError') {
@@ -57,7 +57,7 @@ const putLike = (req, res) => {
           stack: err.stack,
         })
       }
-      res.status(500).send({
+      res.status(SERVER_ERROR).send({
         message: 'Internal Server Error',
         err: err.name,
         stack: err.stack,
@@ -73,7 +73,7 @@ const deleteLike = (req, res) => {
       { new: true }
     )
     .then((card) => {
-      res.status(201).send(card)
+      res.status(OK).send(card)
     })
     .catch ((err) => {
       if (err.name === 'ValidationError') {
@@ -90,7 +90,7 @@ const deleteLike = (req, res) => {
           stack: err.stack,
         })
       }
-      res.status(500).send({
+      res.status(SERVER_ERROR).send({
         message: 'Internal Server Error',
         err: err.name,
         stack: err.stack,
@@ -102,7 +102,7 @@ const deleteCard = (req, res) => {
   cardSchema
     .findByIdAndDelete(req.params.cardId)
     .then((res) => {
-      res.status(204).send(card)
+      res.status(OK).send(card)
     })
     .catch((err) => {
       if (err.name === 'NotValidId') {
@@ -112,7 +112,7 @@ const deleteCard = (req, res) => {
           stack: err.stack,
         })
       }
-      res.status(500).send({
+      res.status(SERVER_ERROR).send({
         message: 'Internal Server Error',
         err: err.name,
         stack: err.stack,
@@ -123,7 +123,7 @@ const deleteCard = (req, res) => {
 const getCards = (req, res) =>  {
   cardSchema.find({})
     .then((cards) => {
-      res.send(cards);
+      res.status(OK).send(cards);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -133,7 +133,7 @@ const getCards = (req, res) =>  {
           stack: err.stack
         })
       }
-      res.status(500).send({
+      res.status(SERVER_ERROR).send({
         message: 'Internal Server Error',
         err: err.message,
         stack: err.stack,

@@ -37,7 +37,7 @@ const updateUser = (req, res) => {
       { new: true, runValidators: true}
     )
     .then((user) => {
-      res.send(user);
+      res.status(OK).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -65,7 +65,7 @@ const updateUser = (req, res) => {
 const findUserById = (req, res) => {
   userModel.findById(req.params.userId)
     .then((user) => {
-      res.send(user);
+      res.status(OK).send(user);
     })
     .catch((err) => {
       if (err.name === 'NotValidId') {
@@ -87,7 +87,7 @@ const getUsers = async (req, res) => {
   userModel
     .find({})
     .then((users) => {
-      res.send(users)
+      res.status(OK).send(users)
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -111,7 +111,7 @@ const uploadAvatar = (req, res) => {
   userModel
     .findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => {
-      res.send(user)
+      res.status(OK).send(user)
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
