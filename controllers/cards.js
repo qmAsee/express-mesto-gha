@@ -52,7 +52,7 @@ const putLike = (req, res) => {
         })
       }
       if (err.name === 'NotValidId') {
-        res.status(NOT_FOUND).send({
+        res.status(BAD_REQUEST).send({
           message: 'Карточка с указанным id не найден',
           err: err.message,
           stack: err.stack,
@@ -93,7 +93,7 @@ const deleteLike = (req, res) => {
         })
       }
       if (err.name === 'NotValidId') {
-        res.status(NOT_FOUND).send({
+        res.status(BAD_REQUEST).send({
           message: 'Карточка с указанным id не найден',
           err: err.message,
           stack: err.stack,
@@ -123,16 +123,21 @@ const deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'NotValidId') {
-        res.status(NOT_FOUND).send({
-          message: 'Карточка с указанным id не найдена',
-          err: err.message,
-          stack: err.stack,
+        res.status(OK).send({
+          message: 'Карточка удалена',
         })
       }
       if (err.name === 'Error') {
         return res.status(NOT_FOUND).send({
           message: 'Карточка с указанным id не найдена',
           error: err.message,
+          stack: err.stack,
+        })
+      }
+      if (err.name === 'NotValidId') {
+        res.status(BAD_REQUEST).send({
+          message: 'Карточка с указанным id не найден',
+          err: err.message,
           stack: err.stack,
         })
       }

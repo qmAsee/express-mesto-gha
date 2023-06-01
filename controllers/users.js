@@ -84,7 +84,7 @@ const findUserById = (req, res) => {
         })
       }
       if (err.name === 'NotValidId') {
-        res.status(NOT_FOUND).send({
+        res.status(BAD_REQUEST).send({
           message: 'Пользователь с указанным id не найден',
           err: err.message,
           stack: err.stack,
