@@ -16,15 +16,9 @@ const resOk = (req, res) => {
 };
 
 const resError = (err, res) => {
-  if (err instanceof mongoose.Error.ValidationError) {
+  if (err instanceof mongoose.Error.ValidationError || err instanceof mongoose.Error.CastError) {
     return res.status(BAD_REQUEST).send({
       message: 'Введенные данные  некорректны',
-    });
-  }
-
-  if (err instanceof mongoose.Error.CastError) {
-    return res.status(BAD_REQUEST).send({
-      message: 'Введенные данные некорректны',
     });
   }
 
