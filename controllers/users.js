@@ -19,15 +19,16 @@ const createUser = (req, res) => {
 };
 
 const updateUser = (req, res) => {
+  const { name, about } = req.body;
+
   userModel
     .findByIdAndUpdate(
       req.user._id,
-      req.body,
+      { name, about },
       { new: true, runValidators: true },
     )
-    .orFail()
     .then((user) => {
-      res.status(OK).send(user);
+      resOk(user, res);
     })
     .catch((err) => {
       resError(err, res);
@@ -36,7 +37,6 @@ const updateUser = (req, res) => {
 
 const findUserById = (req, res) => {
   userModel.findById(req.params.userId)
-    .orFail()
     .then((user) => {
       resOk(user, res);
     })

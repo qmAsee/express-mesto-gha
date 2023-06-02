@@ -1,7 +1,6 @@
 const cardSchema = require('../models/card');
 const
   {
-    OK,
     CREATED,
     resOk,
     resError,
@@ -28,7 +27,6 @@ const putLike = (req, res) => {
       { $addToSet: { likes: req.user._id } },
       { new: true },
     )
-    .orFail()
     .then((card) => {
       resOk(card, res);
     })
@@ -44,7 +42,6 @@ const deleteLike = (req, res) => {
       { $pull: { likes: req.user._id } },
       { new: true },
     )
-    .orFail()
     .then((card) => {
       resOk(card, res);
     })
@@ -56,7 +53,6 @@ const deleteLike = (req, res) => {
 const deleteCard = (req, res) => {
   cardSchema
     .findByIdAndDelete(req.params.cardId)
-    .orFail()
     .then((card) => {
       resOk(card, res);
     })
@@ -68,7 +64,7 @@ const deleteCard = (req, res) => {
 const getCards = (req, res) => {
   cardSchema.find({})
     .then((cards) => {
-      res.status(OK).send(cards);
+      resOk(cards, res);
     })
     .catch((err) => {
       resError(err, res);

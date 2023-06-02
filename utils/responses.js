@@ -36,8 +36,6 @@ const resError = (err, res) => {
 
   return res.status(SERVER_ERROR).send({
     message: 'Произошла ошибка на сервере',
-    err: err.message,
-    stack: err.stack,
   });
 };
 
