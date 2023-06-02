@@ -10,11 +10,7 @@ const {
 mongoose.connect(MONGO_URL);
 
 const app = express();
-
 app.use(express.json());
-app.use((req, res) => {
-  res.status(NOT_FOUND).send(req);
-});
 
 app.use((req, res, next) => {
   req.user = {
@@ -25,6 +21,11 @@ app.use((req, res, next) => {
 });
 
 app.use(router);
+app.use('/', router.all('*', (req, res) => {
+  res.status(NOT_FOUND).send({
+    message: 'Запрашиваемый ресурс не найден',
+  });
+}));
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
