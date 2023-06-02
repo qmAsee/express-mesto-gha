@@ -25,7 +25,7 @@ const updateUser = (req, res) => {
       req.body,
       { new: true, runValidators: true },
     )
-    .orFail(new Error('Введён некорректный id'))
+    .orFail()
     .then((user) => {
       res.status(OK).send(user);
     })
@@ -36,7 +36,7 @@ const updateUser = (req, res) => {
 
 const findUserById = (req, res) => {
   userModel.findById(req.params.userId)
-    .orFail(new Error('Введён некорректный id'))
+    .orFail()
     .then((user) => {
       resOk(user, res);
     })

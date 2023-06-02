@@ -16,12 +16,6 @@ const resOk = (req, res) => {
 };
 
 const resError = (err, res) => {
-  if (err instanceof mongoose.Error.DocumentNotFoundError) {
-    return res.status(NOT_FOUND).send({
-      message: 'Ресурс с указанным id не был найден',
-    });
-  }
-
   if (err instanceof mongoose.Error.ValidationError) {
     return res.status(BAD_REQUEST).send({
       message: 'Введенные данные  некорректны',
@@ -31,6 +25,12 @@ const resError = (err, res) => {
   if (err instanceof mongoose.Error.CastError) {
     return res.status(BAD_REQUEST).send({
       message: 'Введенные данные некорректны',
+    });
+  }
+
+  if (err instanceof mongoose.Error.DocumentNotFoundError) {
+    return res.status(NOT_FOUND).send({
+      message: 'Ресурс с указанным id не был найден',
     });
   }
 

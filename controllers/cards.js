@@ -28,7 +28,7 @@ const putLike = (req, res) => {
       { $addToSet: { likes: req.user._id } },
       { new: true },
     )
-    .orFail(new Error('Карточка с указанным id не найдена'))
+    .orFail()
     .then((card) => {
       resOk(card, res);
     })
@@ -44,7 +44,7 @@ const deleteLike = (req, res) => {
       { $pull: { likes: req.user._id } },
       { new: true },
     )
-    .orFail(new Error('Карточка с указанным id не найдена'))
+    .orFail()
     .then((card) => {
       resOk(card, res);
     })
@@ -56,7 +56,7 @@ const deleteLike = (req, res) => {
 const deleteCard = (req, res) => {
   cardSchema
     .findByIdAndDelete(req.params.cardId)
-    .orFail(new Error('Карточка с указанным id не найдена'))
+    .orFail()
     .then((card) => {
       resOk(card, res);
     })
