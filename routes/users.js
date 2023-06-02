@@ -6,7 +6,7 @@ const {
   findUserById,
   getUsers,
   uploadAvatar,
-} = require('../controllers/users.js');
+} = require('../controllers/users');
 
 router.post('/', createUser);
 router.patch('/me', updateUser);
