@@ -19,7 +19,7 @@ const createUser = (req, res, next) => {
     password,
   } = req.body;
 
-  bcrypt.hash(password, 10)
+  bcrypt.hash(password, 12)
     .then((hash) => userModel.create({
       password: hash,
       name,
