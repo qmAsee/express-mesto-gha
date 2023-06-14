@@ -1,4 +1,7 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const userModel = require('../models/user');
+
 const
   {
     OK,
@@ -7,9 +10,25 @@ const
     resError,
   } = require('../utils/responses');
 
+const { JWT_SECRET, NODE_ENV } = process.env;
+
 const createUser = (req, res) => {
-  userModel
-    .create(req.body)
+  const {
+    name,
+    about,
+    avatar,
+    email,
+    password,
+  } = req.body;
+
+  bcrypt.hash(password, 10)
+    .then((hash) => userModel.create({
+      password: hash,
+      name,
+      about,
+      avatar,
+      email,
+    }))
     .then((user) => {
       res.status(CREATED).send(user);
     })
@@ -33,6 +52,14 @@ const updateUser = (req, res) => {
     .catch((err) => {
       resError(err, res);
     });
+};
+
+const getCurrentUser = (req, res, next) => {
+  userModel.findById(req.user._id)
+    .then((user) => {
+      res.status(200).send({ user });
+    })
+    .catch(next);
 };
 
 const findUserById = (req, res) => {
@@ -69,10 +96,34 @@ const uploadAvatar = (req, res) => {
     });
 };
 
+const login = (req, res, next) => {
+  const { email, password } = req.body;
+
+  userModel.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        { expiresIn: '7d' },
+      );
+
+      res.cookie('jwt', token, {
+        httpsOnly: true,
+        sameSite: false,
+        secure: true,
+        maxAge: 360000 * 24 * 7,
+      })
+        .status(OK).send({ message: 'Авторизация успешна!' });
+    })
+    .catch(next);
+};
+
 module.exports = {
   createUser,
   updateUser,
   findUserById,
   getUsers,
   uploadAvatar,
+  login,
+  getCurrentUser,
 };

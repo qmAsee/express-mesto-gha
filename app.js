@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 const mongoose = require('mongoose');
 const router = require('./routes/routers');
 const { NOT_FOUND } = require('./utils/responses');
@@ -10,15 +11,8 @@ const {
 mongoose.connect(MONGO_URL);
 
 const app = express();
+app.use(helmet());
 app.use(express.json());
-
-app.use((req, res, next) => {
-  req.user = {
-    _id: '6475ca24b169212a8b667885',
-  };
-
-  next();
-});
 
 app.use(router);
 app.use('/', router.all('*', (req, res) => {
