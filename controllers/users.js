@@ -10,9 +10,7 @@ const
     resError,
   } = require('../utils/responses');
 
-const { JWT_SECRET, NODE_ENV } = process.env;
-
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const {
     name,
     about,
@@ -34,6 +32,7 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       resError(err, res);
+      next(err);
     });
 };
 
@@ -99,21 +98,25 @@ const uploadAvatar = (req, res) => {
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
-  userModel.findUserByCredentials(email, password)
+  userModel.findOne({ email }).select('+password')
     .then((user) => {
-      const token = jwt.sign(
-        { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-        { expiresIn: '7d' },
-      );
+      if (!user) {
+        return Promise.reject(new Error('Почта или пароль неверны'));
+      }
 
-      res.cookie('jwt', token, {
-        httpsOnly: true,
-        sameSite: false,
-        secure: true,
-        maxAge: 360000 * 24 * 7,
-      })
-        .status(OK).send({ message: 'Авторизация успешна!' });
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            return Promise.reject(new Error('Почта или пароль неверны'));
+          }
+          return res.send({
+            token: jwt.sign(
+              { _id: user._id },
+              'some-secret-key',
+              { expiresIn: '7d' },
+            ),
+          });
+        });
     })
     .catch(next);
 };

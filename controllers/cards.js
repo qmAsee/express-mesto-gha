@@ -50,14 +50,25 @@ const deleteLike = (req, res) => {
     });
 };
 
-const deleteCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   cardSchema
-    .findByIdAndDelete(req.params.cardId)
+    .findById(req.params.cardId)
     .then((card) => {
-      resOk(card, res);
+      const owner = card.owner.toString();
+      if (req.user._id === owner) {
+        cardSchema
+          .deleteOne(card)
+          .then(() => {
+            resOk(card, res);
+          })
+          .catch(next);
+      } else {
+        throw new Error('Не удалось удалить карточку');
+      }
     })
     .catch((err) => {
       resError(err, res);
+      next(err);
     });
 };
 
