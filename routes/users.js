@@ -1,8 +1,13 @@
-const { celebrate, Joi } = require('celebrate');
 const router = require('express').Router();
 const auth = require('../middlewares/auth');
 
-const linkPattern = /https?:\/\/(\w{3}\.)?[1-9a-z\-.]{1,}\w\w(\/[1-90a-z.,_@%&?+=~/-]{1,}\/?)?#?/i;
+const {
+  findUserByIdValidation,
+  updateUserValidation,
+  uploadAvatarValidation,
+  loginValidation,
+  createUserValidation,
+} = require('../middlewares/fieldsValidaton');
 
 const {
   createUser,
@@ -15,43 +20,11 @@ const {
 } = require('../controllers/users');
 
 router.use(auth);
-
-router.patch('/me', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-  }),
-}), updateUser);
-
-router.patch('/me/avatar', celebrate({
-  body: Joi.object().keys({
-    avatar: Joi.string().pattern(linkPattern),
-  }),
-}), uploadAvatar);
-
-router.get('/:userId', celebrate({
-  params: Joi.object().keys({
-    userId: Joi.string().hex().length(24),
-  }),
-}), findUserById);
-
-router.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
-  }),
-}), login);
-
-router.post('/signup', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2).max(30),
-    avatar: Joi.string().pattern(linkPattern),
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), createUser);
-
+router.patch('/me', updateUserValidation, updateUser);
+router.patch('/me/avatar', uploadAvatarValidation, uploadAvatar);
+router.get('/:userId', findUserByIdValidation, findUserById);
+router.post('/signin', loginValidation, login);
+router.post('/signup', createUserValidation, createUser);
 router.get('/', getUsers);
 router.get('/me', getCurrentUser);
 

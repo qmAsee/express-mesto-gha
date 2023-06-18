@@ -1,37 +1,13 @@
-const mongoose = require('mongoose');
+const http2 = require('http2');
 
-const BAD_REQUEST = 400;
-const NOT_FOUND = 404;
-const SERVER_ERROR = 500;
-const OK = 200;
-const CREATED = 201;
-
-const resOk = (req, res) => {
-  if (!req) {
-    return res.status(NOT_FOUND).send({
-      message: 'Данный id не содержит данных',
-    });
-  }
-  return res.status(OK).send(req);
-};
-
-const resError = (err, res) => {
-  if (err instanceof mongoose.Error.ValidationError || err instanceof mongoose.Error.CastError) {
-    return res.status(BAD_REQUEST).send({
-      message: 'Введенные данные  некорректны',
-    });
-  }
-
-  if (err instanceof mongoose.Error.DocumentNotFoundError) {
-    return res.status(NOT_FOUND).send({
-      message: 'Ресурс с указанным id не был найден',
-    });
-  }
-
-  return res.status(SERVER_ERROR).send({
-    message: 'Произошла ошибка на сервере',
-  });
-};
+const BAD_REQUEST = http2.constants.HTTP_STATUS_BAD_REQUEST;
+const NOT_FOUND = http2.constants.HTTP_STATUS_NOT_FOUND;
+const SERVER_ERROR = http2.constants.HTTP_STATUS_INTERNAL_SERVER_ERROR;
+const OK = http2.constants.HTTP_STATUS_OK;
+const CREATED = http2.constants.HTTP_STATUS_CREATED;
+const CONFLICT = http2.constants.HTTP_STATUS_CONFLICT;
+const FORBIDDEN = http2.constants.HTTP_STATUS_FORBIDDEN;
+const UNAUTH = http2.constants.HTTP_STATUS_UNAUTHORIZED;
 
 module.exports = {
   BAD_REQUEST,
@@ -39,6 +15,7 @@ module.exports = {
   SERVER_ERROR,
   OK,
   CREATED,
-  resOk,
-  resError,
+  CONFLICT,
+  FORBIDDEN,
+  UNAUTH,
 };
