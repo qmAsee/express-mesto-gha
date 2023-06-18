@@ -31,7 +31,7 @@ const createUser = (req, res, next) => {
       email,
     }))
     .then((user) => {
-      res.status(CREATED).send(user);
+      res.status(CREATED).send({ user });
     })
   // eslint-disable-next-line consistent-return
     .catch((err) => {

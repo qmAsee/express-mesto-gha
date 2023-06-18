@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const auth = require('../middlewares/auth');
 
 const {
   findUserByIdValidation,
@@ -19,7 +18,6 @@ const {
   getCurrentUser,
 } = require('../controllers/users');
 
-router.use(auth);
 router.patch('/me', updateUserValidation, updateUser);
 router.patch('/me/avatar', uploadAvatarValidation, uploadAvatar);
 router.get('/:userId', findUserByIdValidation, findUserById);
