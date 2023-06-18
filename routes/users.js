@@ -23,8 +23,8 @@ router.use(auth);
 router.patch('/me', updateUserValidation, updateUser);
 router.patch('/me/avatar', uploadAvatarValidation, uploadAvatar);
 router.get('/:userId', findUserByIdValidation, findUserById);
-router.post('/signin', loginValidation, login);
-router.post('/signup', createUserValidation, createUser);
+router.post('/sign-in', loginValidation, login);
+router.post('/sign-up', createUserValidation, createUser);
 router.get('/', getUsers);
 router.get('/me', getCurrentUser);
 
