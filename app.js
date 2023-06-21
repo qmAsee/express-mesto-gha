@@ -5,6 +5,9 @@ const NotFound = require('./utils/errorClasses/ErrorNotFound');
 const router = require('./routes/routers');
 const { NOT_FOUND } = require('./utils/responses');
 const auth = require('./middlewares/auth');
+const { handleErrors } = require('./')
+
+const app = express();
 
 const {
   PORT = 3000,
@@ -12,14 +15,13 @@ const {
 } = process.env;
 mongoose.connect(MONGO_URL);
 
-const app = express();
+app.use(router);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(router);
 app.use(auth);
-app.use(errors);
+app.use(errors());
 
 app.use((req, res, next) => {
   next(new NotFound('Запрашиваемый ресурс не найден'));

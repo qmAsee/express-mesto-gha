@@ -4,31 +4,28 @@ const validator = require('validator');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    minlength: 2,
-    maxlength: 30,
+    minlength: [2, 'Минимальная длина поля - 2 символа'],
+    maxlength: [30, 'Максимальная длина поля - 30 символов'],
     default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
-    minlength: 2,
-    maxlength: 30,
+    minlength: [2, 'Минимальная длина поля - 2 символа'],
+    maxlength: [30, 'Максимальная длина поля - 30 символов'],
     default: 'Исследователь',
   },
   avatar: {
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
-    validate: {
-      validator: (v) => validator.isURL(v),
-      message: 'Укажите URL-адрес изображения',
-    },
   },
   email: {
     required: true,
     unique: true,
     type: String,
-    validate: {
-      validator: (v) => validator.isEmail(v),
-      message: 'Почта введена неверно',
+    validate(value) {
+      if (!validator.isEmail(value)) {
+        throw new Error('Некорректный адрес электронной почты');
+      }
     },
   },
   password: {
