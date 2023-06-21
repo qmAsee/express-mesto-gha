@@ -15,11 +15,12 @@ const {
 } = process.env;
 mongoose.connect(MONGO_URL);
 
+app.use(router);
+
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(router);
 app.use(auth);
 app.use(errors());
 
