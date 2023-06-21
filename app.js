@@ -1,5 +1,4 @@
 const express = require('express');
-const helmet = require('helmet');
 const { errors } = require('celebrate');
 const mongoose = require('mongoose');
 const NotFound = require('./utils/errorClasses/ErrorNotFound');
@@ -14,7 +13,7 @@ const {
 mongoose.connect(MONGO_URL);
 
 const app = express();
-app.use(helmet());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
