@@ -7,6 +7,8 @@ const Conflict = require('../utils/errorClasses/ErrorConflict');
 const NotFound = require('../utils/errorClasses/ErrorNotFound');
 const Unauthorized = require('../utils/errorClasses/ErrorUnauthorized');
 
+const { JWT_SECRET = '64931485be787ff3de1a6132' } = process.env;
+
 const
   {
     OK,
@@ -178,7 +180,7 @@ const login = (req, res, next) => {
       res.status(OK).send({
         token: jwt.sign(
           { _id: user._id },
-          'some-secret-key',
+          JWT_SECRET,
           { expiresIn: '7d' },
         ),
         status: res.statusCode,
