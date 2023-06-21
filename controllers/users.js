@@ -22,24 +22,33 @@ const createUser = (req, res, next) => {
     password,
   } = req.body;
 
-  bcrypt.hash(password, 12)
+  bcrypt.hash(password, 10)
     .then((hash) => userModel.create({
-      password: hash,
       name,
       about,
       avatar,
       email,
+      password: hash,
     }))
     .then((user) => {
-      res.status(CREATED).send({ user });
+      if (!user) {
+        return next(new NotFound('Не удается создать пользователя'));
+      }
+      return res.status(CREATED).send({
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        _id: user._id,
+      });
     })
-  // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidatonError') {
-        return next(new BadRequest('Введены некорректные данные'));
+        next(new BadRequest('Введены некорректные данные'));
+        return;
       }
       if (err.name === 'MongoServerError') {
-        return next(new Conflict('Пользователь с введенным email уже зарегистрирован'));
+        next(new Conflict('Пользователь с введенным email уже зарегистрирован'));
+        return;
       }
       next(err);
     })
@@ -56,7 +65,17 @@ const updateUser = (req, res, next) => {
       { new: true, runValidators: true },
     )
     .then((user) => {
-      res.send(user);
+      if (!user) {
+        next(new BadRequest('Введены некорректные данные'));
+        return;
+      }
+      res.status(OK).send({
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+        _id: user._id,
+      });
     })
     .catch((err) => {
       if (err.name === 'ValidatonError') {
@@ -64,37 +83,42 @@ const updateUser = (req, res, next) => {
         return;
       }
       next(err);
-    });
+    })
+    .catch(next);
 };
 
 const getCurrentUser = (req, res, next) => {
-  userModel.findById(req.user._id)
+  userModel
+    .findById(req.user._id)
     .then((user) => {
       if (!user) {
         throw new NotFound('Пользователь по указанному id не найден');
       }
-      res.status(OK).send({ user });
+      res.status(OK).send({
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+        _id: user._id,
+      });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequest('Введены некорректные данные'));
-        return;
-      }
-      if (err.message === 'NotFound') {
-        next(new NotFound('Пользователь по указанному id не найден'));
-        return;
-      }
-      next(err);
-    });
+    .catch(next);
 };
 
 const findUserById = (req, res, next) => {
-  userModel.findById(req.params.userId)
+  userModel
+    .findById(req.params.userId)
     .then((user) => {
       if (!user) {
         throw new NotFound('Пользователь по указанному id не найден');
       }
-      res.status(OK).send(user);
+      res.status(OK).send({
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+        _id: user._id,
+      });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -102,18 +126,23 @@ const findUserById = (req, res, next) => {
         return;
       }
       next(err);
-    });
+    })
+    .catch(next);
 };
 
 const getUsers = async (req, res, next) => {
   userModel
     .find({})
     .then((users) => {
-      res.status(OK).send(users);
+      res.status(OK).send(users.map((user) => ({
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+        _id: user._id,
+      })));
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 const uploadAvatar = (req, res, next) => {
@@ -122,15 +151,15 @@ const uploadAvatar = (req, res, next) => {
   userModel
     .findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => {
-      res.status(OK).send(user);
+      res.status(OK).send({
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+        _id: user._id,
+      });
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequest('Введены некорректные данные'));
-        return;
-      }
-      next(err);
-    });
+    .catch(next);
 };
 
 const login = (req, res, next) => {
@@ -139,22 +168,21 @@ const login = (req, res, next) => {
   userModel.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new Unauthorized('Почта или пароль неверны'));
+        next(new Unauthorized('Почта или пароль неверны'));
+        return;
       }
-
-      return bcrypt.compare(password, user.password)
-        .then((matched) => {
-          if (!matched) {
-            return Promise.reject(new Unauthorized('Почта или пароль неверны'));
-          }
-          return res.send({
-            token: jwt.sign(
-              { _id: user._id },
-              'some-secret-key',
-              { expiresIn: '7d' },
-            ),
-          });
-        });
+      if (!bcrypt.compare(password, user.password)) {
+        next(new Unauthorized('Почта или пароль неверны'));
+        return;
+      }
+      res.status(OK).send({
+        token: jwt.sign(
+          { _id: user._id },
+          'some-secret-key',
+          { expiresIn: '7d' },
+        ),
+        status: res.statusCode,
+      });
     })
     .catch(next);
 };

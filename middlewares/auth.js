@@ -12,10 +12,10 @@ const auth = (req, res, next) => {
   try {
     payload = jwt.verify(token, 'some-secret-key');
   } catch (err) {
-    return next(new Unauthorized('Для доступа требуется авторизация'));
+    throw new Unauthorized('Для доступа требуется авторизация');
   }
   req.user = payload;
-  return next();
+  next();
 };
 
 module.exports = auth;
