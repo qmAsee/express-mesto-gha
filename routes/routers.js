@@ -12,8 +12,8 @@ router.use(auth);
 router.use('/users', userRoutes);
 router.use('/cards', cardsRouter);
 
-router.use('*', (req, res, next) => {
-  next(new NotFound('Страница не найдена'));
+router.use('*', () => {
+  throw new NotFound('Страница не найдена');
 });
 
 module.exports = router;

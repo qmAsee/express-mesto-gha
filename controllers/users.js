@@ -136,13 +136,7 @@ const getUsers = async (req, res, next) => {
   userModel
     .find({})
     .then((users) => {
-      res.status(OK).send(users.map((user) => ({
-        name: user.name,
-        about: user.about,
-        avatar: user.avatar,
-        email: user.email,
-        _id: user._id,
-      })));
+      res.status(OK).send({ users });
     })
     .catch(next);
 };
