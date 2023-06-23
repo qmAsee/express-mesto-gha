@@ -96,7 +96,13 @@ const getCurrentUser = (req, res, next) => {
       if (!user) {
         throw new NotFound('Пользователь по указанному id не найден');
       }
-      res.status(OK).send(user);
+      res.status(OK).send({
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+        _id: user._id,
+      });
     })
     .catch(next);
 };

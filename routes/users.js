@@ -14,10 +14,10 @@ const {
   getCurrentUser,
 } = require('../controllers/users');
 
+router.get('/me', getCurrentUser);
 router.patch('/me', updateUserValidation, updateUser);
 router.patch('/me/avatar', uploadAvatarValidation, uploadAvatar);
 router.get('/:userId', findUserByIdValidation, findUserById);
 router.get('/', getUsers);
-router.get('/me', getCurrentUser);
 
 module.exports = router;
