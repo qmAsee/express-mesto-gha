@@ -36,7 +36,7 @@ const createUser = (req, res, next) => {
       if (!user) {
         return next(new NotFound('Не удается создать пользователя'));
       }
-      return res.status(CREATED).send({
+      res.status(CREATED).send({
         name: user.name,
         about: user.about,
         avatar: user.avatar,
@@ -48,7 +48,7 @@ const createUser = (req, res, next) => {
         next(new BadRequest('Введены некорректные данные'));
         return;
       }
-      if (err.name === 'MongoServerError') {
+      if (err.status === 409) {
         next(new Conflict('Пользователь с введенным email уже зарегистрирован'));
         return;
       }

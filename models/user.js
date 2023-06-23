@@ -19,9 +19,9 @@ const userSchema = new mongoose.Schema({
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
   email: {
+    type: String,
     required: true,
     unique: true,
-    type: String,
     validate(value) {
       if (!validator.isEmail(value)) {
         throw new Error('Некорректный адрес электронной почты');

@@ -6,6 +6,8 @@ const router = require('./routes/routers');
 const { NOT_FOUND } = require('./utils/responses');
 const auth = require('./middlewares/auth');
 const { handleErrors } = require('./middlewares/handleErrors');
+const { createUserValidation } = require('./middlewares/fieldsValidaton');
+const { createUser, login } = require('./controllers/users');
 
 const app = express();
 
@@ -18,14 +20,14 @@ mongoose.connect(MONGO_URL);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(router);
+app.post('/signup', createUserValidation, createUser);
+app.post('/signin', createUserValidation, login);
+
 app.use(auth);
+app.use(router);
+
 app.use(errors());
 app.use(handleErrors);
-
-app.use((req, res, next) => {
-  next(new NotFound('Запрашиваемый ресурс не найден'));
-});
 
 app.use('/', router.all('*', (req, res) => {
   res.status(NOT_FOUND).send({

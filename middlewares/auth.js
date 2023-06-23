@@ -5,7 +5,7 @@ const { JWT_SECRET = '64931485be787ff3de1a6132' } = process.env;
 
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
-  if (!authorization || authorization.startsWith('Bearer ')) {
+  if (!authorization || !authorization.startsWith('Bearer')) {
     throw new Unauthorized('Для доступа требуется авторизация');
   }
   const token = authorization.replace('Bearer ', '');
