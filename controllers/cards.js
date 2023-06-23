@@ -82,18 +82,18 @@ const deleteCard = (req, res, next) => {
     .findById(req.params.cardId)
     .then((card) => {
       const owner = card.owner.toString();
-      if (req.user._id === owner) {
-        cardSchema
-          .deleteOne(card)
-          .then((removedCard) => {
-            res.status(OK).send({
-              data: removedCard,
-              message: 'Карточка удалена',
-            });
-          });
-      } else {
-        throw new Forbidden('Не удалось удалить карточку');
+      if (!card.owner === owner) {
+        throw new Forbidden('Вы не можете  удалить чужую карточку');
       }
+      cardSchema
+        .deleteOne(card)
+        .then((removedCard) => {
+          res.status(OK).send({
+            data: removedCard,
+            message: 'Карточка удалена',
+          });
+        })
+        .catch(next);
     })
     .catch((err) => {
       if (err.name === 'NotFoundError') {

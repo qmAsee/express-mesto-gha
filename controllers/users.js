@@ -48,7 +48,7 @@ const createUser = (req, res, next) => {
         next(new BadRequest('Введены некорректные данные'));
         return;
       }
-      if (err.status === 409) {
+      if (err.code === 11000) {
         next(new Conflict('Пользователь с введенным email уже зарегистрирован'));
         return;
       }
