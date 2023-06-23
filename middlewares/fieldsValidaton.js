@@ -41,10 +41,25 @@ const uploadAvatarValidation = celebrate({
   }),
 });
 
+const createCardValidation = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30).required(),
+    link: Joi.string().required().default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png').regex(linkRegExp),
+  }),
+});
+
+const cardIdValidation = celebrate({
+  params: Joi.object({
+    cardId: Joi.string().hex().length(24),
+  }),
+});
+
 module.exports = {
   createUserValidation,
   loginValidation,
   updateUserValidation,
   findUserByIdValidation,
   uploadAvatarValidation,
+  cardIdValidation,
+  createCardValidation,
 };

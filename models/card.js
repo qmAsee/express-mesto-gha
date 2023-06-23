@@ -9,11 +9,12 @@ const cardSchema = mongoose.Schema({
     maxlength: 30,
   },
   link: {
-    required: true,
+    required: [true, 'Вставьте ссылку на изображение'],
     type: String,
-    validate: {
-      validator: (v) => validator.isURL(v),
-      message: 'Укажите URL-адрес изображения',
+    validate(value) {
+      if (!validator.isURL(value)) {
+        throw new Error('Некорректный URL-адрес ');
+      }
     },
   },
   owner: {
