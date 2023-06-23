@@ -64,8 +64,7 @@ const deleteLike = (req, res, next) => {
     )
     .then((card) => {
       if (!card) {
-        next(new NotFound('Карточка не найдена'));
-        return;
+        throw new NotFound('Карточка не найдена');
       }
       res.status(OK).send(card);
     })
@@ -91,8 +90,7 @@ const deleteCard = (req, res, next) => {
               data: removedCard,
               message: 'Карточка удалена',
             });
-          })
-          .catch(next);
+          });
       } else {
         throw new Forbidden('Не удалось удалить карточку');
       }
