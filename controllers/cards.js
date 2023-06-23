@@ -110,7 +110,7 @@ const deleteCard = (req, res, next) => {
 const getCards = async (req, res, next) => {
   await cardSchema.find({})
     .then((cards) => {
-      res.status(200).send(cards);
+      res.status(OK).send(cards);
     })
     .catch(next);
 };

@@ -9,7 +9,7 @@ router.use('/users', userRoutes);
 router.use('/cards', cardsRouter);
 
 router.use('*', () => {
-  throw new NotFound('Страница не найдена');
+  throw new NotFound('Запрашиваемый ресурс не найден');
 });
 
 module.exports = router;
