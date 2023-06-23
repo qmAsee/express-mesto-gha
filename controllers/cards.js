@@ -3,7 +3,6 @@ const { CREATED } = require('../utils/responses');
 const { OK } = require('../utils/responses');
 const BadRequest = require('../utils/errorClasses/ErrorBadRequest');
 const NotFound = require('../utils/errorClasses/ErrorNotFound');
-const Forbidden = require('../utils/errorClasses/ErrorForbidden');
 
 const createCard = (req, res, next) => {
   cardSchema
@@ -93,7 +92,10 @@ const deleteCard = (req, res, next) => {
           })
           .catch(next);
       } else {
-        throw new Forbidden('Не удалось удалить карточку');
+        res.status(403).send({
+          data: card,
+          message: 'Вы не можете удалять чужие карточки',
+        });
       }
     })
     .catch((err) => {
