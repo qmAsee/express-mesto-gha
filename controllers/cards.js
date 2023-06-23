@@ -3,6 +3,7 @@ const { CREATED } = require('../utils/responses');
 const { OK } = require('../utils/responses');
 const BadRequest = require('../utils/errorClasses/ErrorBadRequest');
 const NotFound = require('../utils/errorClasses/ErrorNotFound');
+const Forbidden = require('../utils/errorClasses/ErrorForbidden');
 
 const createCard = (req, res, next) => {
   cardSchema
@@ -64,6 +65,7 @@ const deleteLike = (req, res, next) => {
     .then((card) => {
       if (!card) {
         next(new NotFound('Карточка не найдена'));
+        return;
       }
       res.status(OK).send(card);
     })
@@ -92,7 +94,7 @@ const deleteCard = (req, res, next) => {
           })
           .catch(next);
       } else {
-        throw new Error('Не удалось удалить карточку');
+        throw new Forbidden('Не удалось удалить карточку');
       }
     })
     .catch((err) => {
