@@ -36,7 +36,7 @@ const createUser = (req, res, next) => {
       if (!user) {
         return next(new NotFound('Не удается создать пользователя'));
       }
-      res.status(CREATED).send({
+      return res.status(CREATED).send({
         name: user.name,
         about: user.about,
         avatar: user.avatar,

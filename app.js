@@ -29,6 +29,10 @@ app.use(router);
 app.use(errors());
 app.use(handleErrors);
 
+app.use((req, res, next) => {
+  next(new NotFound('Запрашиваемый ресурс не найден'));
+});
+
 app.use('/', router.all('*', (req, res) => {
   res.status(NOT_FOUND).send({
     message: 'Запрашиваемый ресурс не найден',
