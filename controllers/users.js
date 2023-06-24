@@ -170,7 +170,8 @@ const login = async (req, res, next) => {
         next(new Unauthorized('Почта или пароль неверны'));
         return;
       }
-      bcrypt.compare(password, user.password)
+      /* eslint consistent-return: off */
+      return bcrypt.compare(password, user.password)
         .then((match) => {
           if (!match) {
             throw new Unauthorized('Почта или пароль неверны');
