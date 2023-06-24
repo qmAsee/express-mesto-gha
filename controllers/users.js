@@ -53,8 +53,7 @@ const createUser = (req, res, next) => {
         return;
       }
       next(err);
-    })
-    .catch(next);
+    });
 };
 
 const updateUser = (req, res, next) => {
@@ -68,7 +67,7 @@ const updateUser = (req, res, next) => {
     )
     .then((user) => {
       if (!user) {
-        next(new BadRequest('Введены некорректные данные'));
+        next(new NotFound('Пользователь по указанному id не найден'));
         return;
       }
       res.status(OK).send({
@@ -85,8 +84,7 @@ const updateUser = (req, res, next) => {
         return;
       }
       next(err);
-    })
-    .catch(next);
+    });
 };
 
 const getCurrentUser = (req, res, next) => {
@@ -128,15 +126,14 @@ const findUserById = (req, res, next) => {
         return;
       }
       next(err);
-    })
-    .catch(next);
+    });
 };
 
 const getUsers = async (req, res, next) => {
   userModel
     .find({})
     .then((users) => {
-      res.status(OK).send({ users });
+      res.send({ users });
     })
     .catch(next);
 };
@@ -155,10 +152,16 @@ const uploadAvatar = (req, res, next) => {
         _id: user._id,
       });
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequest('Введены некорректные данные'));
+      } else {
+        next(err);
+      }
+    });
 };
 
-const login = (req, res, next) => {
+const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   userModel.findOne({ email }).select('+password')
@@ -167,18 +170,21 @@ const login = (req, res, next) => {
         next(new Unauthorized('Почта или пароль неверны'));
         return;
       }
-      if (!bcrypt.compare(password, user.password)) {
-        next(new Unauthorized('Почта или пароль неверны'));
-        return;
-      }
-      res.status(OK).send({
-        token: jwt.sign(
-          { _id: user._id },
-          STATUS === 'production' ? JWT_SECRET : 'some-secret-key',
-          { expiresIn: '7d' },
-        ),
-        status: res.statusCode,
-      });
+      bcrypt.compare(password, user.password)
+        .then((match) => {
+          if (!match) {
+            throw new Unauthorized('Почта или пароль неверны');
+          } else {
+            res.status(OK).send({
+              token: jwt.sign(
+                { _id: user._id },
+                STATUS === 'production' ? JWT_SECRET : 'some-secret-key',
+                { expiresIn: '7d' },
+              ),
+              status: res.statusCode,
+            });
+          }
+        });
     })
     .catch(next);
 };

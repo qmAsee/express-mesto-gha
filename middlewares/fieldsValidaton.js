@@ -21,8 +21,8 @@ const loginValidation = celebrate({
 
 const updateUserValidation = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30).default('Жак-Ив Кусто'),
-    about: Joi.string().min(2).max(30).default('Исследователь'),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
   }),
   params: Joi.object({
     cardId: Joi.string().hex().length(24),
@@ -37,14 +37,14 @@ const findUserByIdValidation = celebrate({
 
 const uploadAvatarValidation = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png').regex(linkRegExp),
+    avatar: Joi.string().regex(linkRegExp),
   }),
 });
 
 const createCardValidation = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
-    link: Joi.string().required().default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png').regex(linkRegExp),
+    link: Joi.string().required(),
   }),
 });
 
