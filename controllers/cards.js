@@ -1,7 +1,7 @@
 const cardSchema = require('../models/card');
 const { CREATED } = require('../utils/responses');
 const { OK } = require('../utils/responses');
-const { FORBIDDEN } = require('../utils/responses');
+const Forbidden = require('../utils/errorClasses/ErrorForbidden');
 const BadRequest = require('../utils/errorClasses/ErrorBadRequest');
 const NotFound = require('../utils/errorClasses/ErrorNotFound');
 
@@ -43,8 +43,7 @@ const putLike = (req, res, next) => {
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 const deleteLike = (req, res, next) => {
@@ -66,8 +65,7 @@ const deleteLike = (req, res, next) => {
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 const deleteCard = (req, res, next) => {
@@ -89,19 +87,12 @@ const deleteCard = (req, res, next) => {
           })
           .catch(next);
       } else {
-        res.status(FORBIDDEN).send({
-          data: card,
-          message: 'Вы не можете удалять чужие карточки',
-        });
+        next(new Forbidden('Вы не можете удалять чужие карточки'));
       }
     })
     .catch((err) => {
-      if (err.name === 'NotFoundError') {
-        next(new NotFound('Карточка по указанному id не найдена'));
-      }
       next(err);
-    })
-    .catch(next);
+    });
 };
 
 const getCards = async (req, res, next) => {

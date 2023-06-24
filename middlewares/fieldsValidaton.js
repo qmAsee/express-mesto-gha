@@ -24,9 +24,6 @@ const updateUserValidation = celebrate({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
   }),
-  params: Joi.object({
-    cardId: Joi.string().hex().length(24),
-  }),
 });
 
 const findUserByIdValidation = celebrate({

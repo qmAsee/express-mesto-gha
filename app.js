@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const { errors } = require('celebrate');
 const mongoose = require('mongoose');
-const NotFound = require('./utils/errorClasses/ErrorNotFound');
 const router = require('./routes/routers');
 const auth = require('./middlewares/auth');
 const { handleErrors } = require('./middlewares/handleErrors');
@@ -28,10 +27,6 @@ app.use(router);
 
 app.use(errors());
 app.use(handleErrors);
-
-app.use((req, res, next) => {
-  next(new NotFound('Запрашиваемый ресурс не найден'));
-});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
