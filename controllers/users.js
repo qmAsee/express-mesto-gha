@@ -176,7 +176,7 @@ const login = async (req, res, next) => {
           if (!match) {
             throw new Unauthorized('Почта или пароль неверны');
           } else {
-            return res.status(OK).send({
+            res.status(OK).send({
               token: jwt.sign(
                 { _id: user._id },
                 STATUS === 'production' ? JWT_SECRET : 'some-secret-key',
