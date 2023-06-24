@@ -73,11 +73,11 @@ const deleteLike = (req, res, next) => {
 const deleteCard = (req, res, next) => {
   cardSchema
     .findById(req.params.cardId)
+    .orFail(() => {
+      throw new NotFound('Карточка с указанным id не найдена');
+    })
     .then((card) => {
       const owner = card.owner.toString();
-      if (!card.cardId) {
-        throw new NotFound('Карточка не найдена');
-      }
       if (req.user._id === owner) {
         cardSchema
           .deleteOne(card)
